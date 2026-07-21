@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!-- saved from url=(0097)https://stackblitzstartersyurmkkw3-abz2-%2D8080-%2D87cf54cd.local-credentialless.webcontainer.io/ -->
-<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Field Report Dashboard</title>
 
     <style>
@@ -183,11 +183,11 @@
     <div class="app-header">FIELD REPORT DASHBOARD</div>
 
     <div class="menu-tabs">
-      <button class="tab-btn active" onclick="showPage(&#39;edsPage&#39;,this)">
+      <button class="tab-btn active" onclick="showPage('edsPage',this)">
         📋 EDS REPORT
       </button>
 
-      <button class="tab-btn" onclick="showPage(&#39;ospPage&#39;,this)">
+      <button class="tab-btn" onclick="showPage('ospPage',this)">
         🛠 OSP REPORT
       </button>
     </div>
@@ -195,7 +195,8 @@
     <div id="edsPage" class="container page active">
       <h2>📋 รายงาน EDS</h2>
 
-      <textarea id="rawText" rows="12" placeholder="วางข้อมูล Job ตรงนี้">      </textarea>
+      <textarea id="rawText" rows="12" placeholder="วางข้อมูล Job ตรงนี้">
+      </textarea>
 
       <div class="top-btn-group">
         <button onclick="parseText()" class="btn-top btn-primary">
@@ -209,7 +210,8 @@
         <button onclick="clearEDS()" class="btn-top btn-danger">🗑 Clear</button>
       </div>
 
-      <textarea id="edsReport" rows="25" placeholder="รายงาน EDS ที่แปลงแล้ว">      </textarea>
+      <textarea id="edsReport" rows="25" placeholder="รายงาน EDS ที่แปลงแล้ว">
+      </textarea>
     </div>
 
     <div id="ospPage" class="container page">
@@ -229,7 +231,8 @@
           MA BKN1 :: เชี่ยวชาญ มะณีวรรณ :: 0988055009
         </option>
       </select>
-      <textarea id="ospText" rows="10" placeholder="วางใบงาน OSP จาก TTSM">      </textarea>
+      <textarea id="ospText" rows="10" placeholder="วางใบงาน OSP จาก TTSM">
+      </textarea>
 
       <div class="top-btn-group">
         <button onclick="parseOSP()" class="btn-top btn-primary">
@@ -242,7 +245,12 @@
 
         <button onclick="clearOSP()" class="btn-top btn-danger">🗑 Clear</button>
       </div>
-      <textarea id="ospReport" rows="35" placeholder="รายงานที่แปลงแล้วจะแสดงที่นี่">      </textarea>
+      <textarea
+        id="ospReport"
+        rows="35"
+        placeholder="รายงานที่แปลงแล้วจะแสดงที่นี่"
+      >
+      </textarea>
     </div>
 
     <script>
@@ -410,6 +418,31 @@ ${gps}
     </script>
 
     <script>
+      function checkFactoryAuth() {
+        const auth = JSON.parse(localStorage.getItem('factoryAuth'));
+
+        if (!auth) {
+          location.replace(
+            'https://pongthepstar8-web.github.io/tool-launcher/'
+          );
+          return false;
+        }
+
+        const expireTime = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
+
+        if (Date.now() - auth.loginTime > expireTime) {
+          localStorage.clear();
+
+          location.replace(
+            'https://pongthepstar8-web.github.io/tool-launcher/'
+          );
+          return false;
+        }
+
+        return true;
+      }
+
+      checkFactoryAuth();
       function parseText() {
         const text = document.getElementById('rawText').value;
 
@@ -526,14 +559,5 @@ Tel. : ${tel}
         alert('✅ ล้างข้อมูล EDS แล้ว');
       }
     </script>
-  
-
-
-      <script>
-        const source = new EventSource('/livereload');
-        const reload = () => location.reload(true);
-        source.onmessage = reload;
-        source.onerror = () => (source.onopen = reload);
-        console.log('[servor] listening for file changes');
-      </script>
-    </body></html>
+  </body>
+</html>
