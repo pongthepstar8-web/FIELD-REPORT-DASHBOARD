@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<!-- saved from url=(0097)https://stackblitzstartersyurmkkw3-abz2-%2D8080-%2D87cf54cd.local-credentialless.webcontainer.io/ -->
+<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Report Dashboard</title>
+
+    <style>
+      #ospReport {
+        background: #f8fafc;
+        border: 2px solid #dbeafe;
+        font-family: Consolas, monospace;
+        line-height: 1.5;
+        font-size: 14px;
+        white-space: pre-wrap;
+      }
+
+      #ospText {
+        background: #fff;
+        border: 2px solid #e5e7eb;
+      }
+
+      h2 {
+        color: #0d6efd;
+        text-align: center;
+        font-weight: 800;
+      }
+      .app-header {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 800;
+        color: #0d6efd;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+      }
+      .menu-tabs {
+        display: flex;
+        gap: 12px;
+        max-width: 900px;
+        margin: 0 auto 20px;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 16px;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 700;
+        color: #555;
+        background: #ffffff;
+        border: 2px solid #e5e7eb;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      }
+
+      .tab-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .tab-btn.active {
+        color: #fff;
+        border: none;
+        background: linear-gradient(135deg, #0d6efd, #00c6ff);
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+      .top-btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr 120px;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      /* ปุ่มด้านบน */
+      .btn-top {
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      /* สี */
+      .btn-primary {
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #28a745, #43e97b);
+      }
+
+      .btn-gray {
+        background: #6c757d;
+      }
+
+      /* effect */
+      .btn-top:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-top:active {
+        transform: scale(0.97);
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin: 6px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #0056b3;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .row input {
+        flex: 1;
+      }
+      .top-btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr 120px;
+        gap: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="app-header">FIELD REPORT DASHBOARD</div>
+
+    <div class="menu-tabs">
+      <button class="tab-btn active" onclick="showPage(&#39;edsPage&#39;,this)">
+        📋 EDS REPORT
+      </button>
+
+      <button class="tab-btn" onclick="showPage(&#39;ospPage&#39;,this)">
+        🛠 OSP REPORT
+      </button>
+    </div>
+
+    <div id="edsPage" class="container page active">
+      <h2>📋 รายงาน EDS</h2>
+
+      <textarea id="rawText" rows="12" placeholder="วางข้อมูล Job ตรงนี้">      </textarea>
+
+      <div class="top-btn-group">
+        <button onclick="parseText()" class="btn-top btn-primary">
+          📥 แปลงข้อมูล
+        </button>
+
+        <button onclick="copyEDSReport()" class="btn-top btn-success">
+          📋 คัดลอกรายงาน
+        </button>
+
+        <button onclick="clearEDS()" class="btn-top btn-danger">🗑 Clear</button>
+      </div>
+
+      <textarea id="edsReport" rows="25" placeholder="รายงาน EDS ที่แปลงแล้ว">      </textarea>
+    </div>
+
+    <div id="ospPage" class="container page">
+      <h2>👷 OSP OUTSOURCING</h2>
+      <select id="teamSelect">
+        <option value="">-- เลือกทีม --</option>
+
+        <option value="MA UBN1 :: ทวีศักดิ์ โพธิ์พงษ์ :: 0649255124">
+          MA UBN1 :: ทวีศักดิ์ โพธิ์พงษ์ :: 0649255124
+        </option>
+
+        <option value="MA SSK1 :: วิรัตน์ จำปาหอม :: 0830896061">
+          MA SSK1 :: วิรัตน์ จำปาหอม :: 0830896061
+        </option>
+
+        <option value="MA BKN1 :: เชี่ยวชาญ มะณีวรรณ :: 0988055009">
+          MA BKN1 :: เชี่ยวชาญ มะณีวรรณ :: 0988055009
+        </option>
+      </select>
+      <textarea id="ospText" rows="10" placeholder="วางใบงาน OSP จาก TTSM">      </textarea>
+
+      <div class="top-btn-group">
+        <button onclick="parseOSP()" class="btn-top btn-primary">
+          📥 แปลงข้อมูล
+        </button>
+
+        <button onclick="copyOSPReport()" class="btn-top btn-success">
+          📋 คัดลอกรายงาน
+        </button>
+
+        <button onclick="clearOSP()" class="btn-top btn-danger">🗑 Clear</button>
+      </div>
+      <textarea id="ospReport" rows="35" placeholder="รายงานที่แปลงแล้วจะแสดงที่นี่">      </textarea>
+    </div>
+
+    <script>
+      function parseOSP() {
+        const team = document.getElementById('teamSelect').value;
+        const text = document.getElementById('ospText').value;
+
+        // JB
+        const job = (text.match(/JB\d{2}-\d+/i) || [''])[0];
+
+        // Title
+        const title = (text.match(/Title\s*:\s*([\s\S]*?)JB ID\s*:/) || [
+          '',
+          '',
+        ])[1]
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        // Priority
+        const priority = (text.match(/Priority\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+        let issue = 'เข้าตรวจสอบแก้ไขเหตุขัดข้อง';
+
+        const titleUpper = title.toUpperCase();
+
+        if (titleUpper.includes('PON') && titleUpper.includes('HIGH LOSS')) {
+          issue = 'เข้าตรวจสอบ PON High Loss';
+        } else if (titleUpper.includes('HIGH LOSS')) {
+          issue = 'เข้าตรวจสอบ High Loss';
+        } else if (titleUpper.includes('PON DOWN')) {
+          issue = 'เข้าตรวจสอบ PON Down';
+        } else if (titleUpper.includes('SPLITTER DOWN')) {
+          issue = 'เข้าตรวจสอบ Splitter Down';
+        }
+
+        // ตรวจค่า Rx
+        const rxMatch = title.match(/Rx\s*[-:]\s*(-?\d+\.?\d*)/i);
+
+        if (rxMatch) {
+          const rxValue = parseFloat(rxMatch[1]);
+
+          // Rx -29 ลงไป = High Loss
+          if (rxValue <= -29) {
+            issue = 'เข้าตรวจสอบ High Loss';
+          }
+        }
+        // Start
+        const start = (text.match(/Assign Date\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        // Finish
+        const finish = (text.match(/To be Finish before\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        let gps = '';
+
+        const coordMatches = [
+          ...title.matchAll(
+            /([A-Z0-9_\/]+)?[\[\(]\s*(\d+\.\d+\s*,\s*\d+\.\d+)\s*[\]\)]/gi
+          ),
+        ];
+
+        if (coordMatches.length > 0) {
+          gps = coordMatches
+            .map((c) => {
+              const pointName = c[1] || 'GPS';
+
+              return `📍 ${pointName} : ${c[2]}`;
+            })
+            .join('\n');
+        }
+
+        const now = new Date();
+
+        const assignTime = now
+          .toLocaleString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          })
+          .replace(',', '')
+          .replace(/ /g, '-')
+          .replace(/-(\d{2}:\d{2})$/, ' $1');
+
+        const report = `👷 OSP OUTSOURCING NQM 
+TEAM :: ${team || '[เลือกทีม]'}
+:: จ่ายงาน : ${assignTime}
+━━━━━━━━━━━━━━━━━━━━━━
+ใบงานที่ :: [ระบุ]
+JB ID : ${job}
+Title : ${title}
+Priority : ${priority}
+${issue}
+${gps}
+*รายละเอียด เช่น แผนที่ Igis จะส่งใน เมนู OSP บน TTSM ครับ
+━━━━━━━━━━━━━━━━━━━━━━
+:: ใบงานเริ่มต้น : ${start}
+:: ใบงานเสร็จสิ้น : ${finish}
+:: รับงาน : [ระบุ]
+:: เดินทาง : [ระบุ]
+:: ระยะทาง : [ระบุ] km.
+:: On Site : [ระบุ]
+━━━━━━━━━━━━━━━━━━━━━━
+:: ผล test OTDR : [ระบุ]
+:: รายละเอียดเพิ่มเติม : [ระบุ]
+:: เจอแผล : [ระบุ]
+:: สาเหตุเสีย : [ระบุ]
+:: เริ่มแก้ไข : [ระบุ]
+:: แก้ไขโดย : [ระบุ]
+━━━━━━━━━━━━━━━━━━━━━━
+:: เริ่มตัดต่อหัวที่ 1 : [ระบุ]
+:: พิกัดหัวต่อที่ 1 : [ระบุ]
+:: เริ่มตัดต่อหัวที่ 2 : [ระบุ]
+:: พิกัดหัวต่อที่ 2 : [ระบุ]
+:: เริ่มตัดต่อหัวที่ 3 : [ระบุ]
+:: พิกัดหัวต่อที่ 3 : [ระบุ]
+:: เริ่มตัดต่อหัวที่ 4 : [ระบุ]
+:: พิกัดหัวต่อที่ 4 : [ระบุ]
+━━━━━━━━━━━━━━━━━━━━━━
+:: ไม่มี Alarm (Done Job) : [ระบุ]
+:: โยกคอร์ใช้งาน : [ระบุ]
+:: สาเหตุล่าช้า : [ระบุ]
+━━━━━━━━━━━━━━━━━━━━━━
+📦 รายการ Material ที่ใช้งาน
+- Cable ARSS 12 core =
+- Closure 12 core = 2
+- B-LASHED Cable Support =
+- Protective sleeve =
+- PVC TAPE =
+- Preformed Guy Grip Deadend =
+- Preformed (ปีกนก) =
+- Machine Bolt 5/8" x 12" =
+- Patch cord =
+- Pigtail =
+- Connector =`;
+
+        document.getElementById('ospReport').value = report;
+      }
+      function copyOSPReport() {
+        const text = document.getElementById('ospReport').value;
+
+        navigator.clipboard.writeText(text);
+
+        alert('✅ คัดลอกรายงานแล้ว');
+      }
+      function clearOSP() {
+        document.getElementById('teamSelect').selectedIndex = 0;
+
+        document.getElementById('ospText').value = '';
+
+        document.getElementById('ospReport').value = '';
+
+        alert('✅ ล้างข้อมูลแล้ว');
+      }
+    </script>
+
+    <script>
+      function parseText() {
+        const text = document.getElementById('rawText').value;
+
+        // JOB
+        const job = (text.match(/JB\d{2}-\d+/) || [''])[0];
+
+        // Title
+        const title = (text.match(/Title\s*:\s*([\s\S]*?)JB ID/) || ['', ''])[1]
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        // Assign To
+        const name = (text.match(/Assign To\s*:\s*(.+)/) || ['', ''])[1].trim();
+
+        // Tel
+        const telSection = text.split('Assign To')[1] || '';
+
+        const tel = (telSection.match(/0[689]\d{8}/) || [''])[0];
+
+        // Created
+        const created = (text.match(/Assign Date\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        // Finish
+        const finish = (text.match(/To be Finish before\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+        // Priority
+        const priority = (text.match(/Priority\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        // Problem Type
+        const problemType = (text.match(/Problem Type\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        // Problem Service
+        const problemService = (text.match(/Problem Service\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+
+        // Subsystem
+        const subsystem = (text.match(/Subsystem\s*:\s*(.+)/) || [
+          '',
+          '',
+        ])[1].trim();
+        const assignBy = (text.match(
+          /Assign by\s*:\s*([\s\S]*?)Telephone\s*:/i
+        ) || ['', ''])[1].trim();
+
+        const report = `📋 Update
+Zone : [ระบุ UBN/KKN]
+JOB : ${job}
+
+Title : ${title}
+
+Assign To : ${name}
+Tel. : ${tel}
+
+:: Priority : ${priority}
+:: Subsystem : ${subsystem}
+:: Problem Type : ${problemType}
+:: Problem Service : ${problemService}
+:: Created : ${created}
+:: Finish : ${finish}
+:: Assign By : ${assignBy}
+━━━━━━━━━━━━━━━━━━
+:: Accept(Time) : [ระบุเวลา]
+:: Depart(Time) : [ระบุเวลา]
+:: เดินทาง : [ระบุระยะทาง] km.
+━━━━━━━━━━━━━━━━━━
+:: On Site : [ระบุเวลา]
+:: (เจอแผล) : [ระบุ]
+:: สาเหตุเสีย : [ระบุ]
+:: Done : [ระบุ]
+
+`;
+
+        document.getElementById('edsReport').value = report;
+      }
+
+      function copyEDSReport() {
+        const text = document.getElementById('edsReport').value;
+
+        navigator.clipboard.writeText(text);
+
+        alert('✅ คัดลอกรายงาน EDS แล้ว');
+      }
+      function showPage(pageId, btn) {
+        document.querySelectorAll('.page').forEach((page) => {
+          page.classList.remove('active');
+        });
+
+        document.getElementById(pageId).classList.add('active');
+
+        document.querySelectorAll('.tab-btn').forEach((tab) => {
+          tab.classList.remove('active');
+        });
+
+        btn.classList.add('active');
+      }
+      function clearEDS() {
+        document.getElementById('rawText').value = '';
+        document.getElementById('edsReport').value = '';
+
+        alert('✅ ล้างข้อมูล EDS แล้ว');
+      }
+    </script>
+  
+
+
+      <script>
+        const source = new EventSource('/livereload');
+        const reload = () => location.reload(true);
+        source.onmessage = reload;
+        source.onerror = () => (source.onopen = reload);
+        console.log('[servor] listening for file changes');
+      </script>
+    </body></html>
