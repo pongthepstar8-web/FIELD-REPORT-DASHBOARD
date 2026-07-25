@@ -440,17 +440,38 @@
         ])[1].trim();
         let issue = 'เข้าตรวจสอบแก้ไขเหตุขัดข้อง';
 
-        const titleUpper = title.toUpperCase();
+const titleUpper = title.toUpperCase();
 
-        if (titleUpper.includes('PON') && titleUpper.includes('HIGH LOSS')) {
-          issue = 'เข้าตรวจสอบ PON High Loss';
-        } else if (titleUpper.includes('HIGH LOSS')) {
-          issue = 'เข้าตรวจสอบ High Loss';
-        } else if (titleUpper.includes('PON DOWN')) {
-          issue = 'เข้าตรวจสอบ PON Down';
-        } else if (titleUpper.includes('SPLITTER DOWN')) {
-          issue = 'เข้าตรวจสอบ Splitter Down';
-        }
+// PON High Loss
+if (
+  titleUpper.includes('PON') &&
+  titleUpper.includes('HIGH LOSS')
+) {
+  issue = 'เข้าตรวจสอบ PON High Loss';
+}
+
+// High Loss
+else if (titleUpper.includes('HIGH LOSS')) {
+  issue = 'เข้าตรวจสอบ High Loss';
+}
+
+// PON Down
+else if (titleUpper.includes('PON DOWN')) {
+  issue = 'เข้าตรวจสอบ PON Down';
+}
+
+// Splitter Down แบบคำติดกัน
+else if (titleUpper.includes('SPLITTER DOWN')) {
+  issue = 'เข้าตรวจสอบ Splitter Down';
+}
+
+// Splitter ... DOWN แบบคำแยกกัน
+else if (
+  titleUpper.includes('SPLITTER') &&
+  titleUpper.includes('DOWN')
+) {
+  issue = 'เข้าตรวจสอบ Splitter Down';
+}
 
         // ตรวจค่า Rx
         const rxMatch = title.match(/Rx\s*[-:]\s*(-?\d+\.?\d*)/i);
