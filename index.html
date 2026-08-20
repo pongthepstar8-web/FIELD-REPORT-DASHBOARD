@@ -503,21 +503,55 @@ else if (
 
         let gps = '';
 
-        const coordMatches = [
-          ...title.matchAll(
-            /([A-Z0-9_\/]+)?[\[\(]\s*(\d+\.\d+\s*,\s*\d+\.\d+)\s*[\]\)]/gi
-          ),
-        ];
+const coordMatches = [
+  ...title.matchAll(
+    /([A-Z0-9_\/]+)?[\[\(]\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*[\]\)]/gi
+  ),
+];
 
-        if (coordMatches.length > 0) {
-          gps = coordMatches
-            .map((c) => {
-              const pointName = c[1] || 'GPS';
+if (coordMatches.length > 0) {
+  gps = coordMatches
+    .map((match) => {
+      const pointName = match[1] || 'GPS';
 
-              return `📍 ${pointName} : ${c[2]}`;
-            })
-            .join('\n');
-        }
+      let firstCoordinate = parseFloat(match[2]);
+      let secondCoordinate = parseFloat(match[3]);
+
+      let latitude = firstCoordinate;
+      let longitude = secondCoordinate;
+
+      /*
+       * ถ้าค่าตัวแรกเกินช่วง Latitude (-90 ถึง 90)
+       * แต่ค่าตัวที่สองอยู่ในช่วง Latitude
+       * แสดงว่าข้อมูลเรียงเป็น Longitude,Latitude
+       * จึงสลับเป็น Latitude,Longitude
+       */
+      if (
+        Math.abs(firstCoordinate) > 90 &&
+        Math.abs(secondCoordinate) <= 90
+      ) {
+        latitude = secondCoordinate;
+        longitude = firstCoordinate;
+      }
+
+      /*
+       * ใช้ค่าจาก Regex เพื่อรักษาจำนวนทศนิยมเดิม
+       */
+      let latitudeText = match[2];
+      let longitudeText = match[3];
+
+      if (
+        Math.abs(firstCoordinate) > 90 &&
+        Math.abs(secondCoordinate) <= 90
+      ) {
+        latitudeText = match[3];
+        longitudeText = match[2];
+      }
+
+      return `📍 ${pointName} : ${latitudeText},${longitudeText}`;
+    })
+    .join('\n');
+}
 
         const now = new Date();
 
